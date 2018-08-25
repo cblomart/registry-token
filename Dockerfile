@@ -6,4 +6,4 @@ RUN go build -o registry-token-ldap .
 
 FROM busybox
 COPY -from build /app/registry-token-ldap /bin/
-CMD ["registry-token-ldap -logtostderr"]
+CMD ["/bin/registry-token-ldap -logtostderr"]
