@@ -1,0 +1,12 @@
+JWSCert: /etc/registry-token-ldap.crt
+JWSKey: /etc/registry-token-ldap.key
+LDAPServer: ad.contoso.com
+DefaultDomain: CONTOSO
+Rules:
+  - Group: "AdminGroup"
+    Match: ".+"
+    Actions: [ "push", "pull" ]
+  - Match: "${user}/.+"
+    Actions: [ "push", "pull" ]
+  - Match: ".+"
+    Actions: [ "pull" ]

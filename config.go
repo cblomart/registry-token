@@ -9,6 +9,7 @@ type Config struct {
 	Port          uint    `default:"5001"`
 	Path          string  `defautl:"token"`
 	JWSCert       string  `required:"true"`
+	JWSKey        string  `required:"true"`
 	LDAPServer    string  `required:"true"`
 	DefaultDomain string  `required:"true"`
 	Rules         []Rules `required:"true"`
