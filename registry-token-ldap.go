@@ -21,9 +21,11 @@ func init() {
 
 func main() {
 	glog.Infof("Starting registry-token-ldap server")
-	http.HandleFunc("/"+folder, HandleAuth)
+	http.HandleFunc("/"+AuthConfig.Path, HandleAuth)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", AuthConfig.Port), nil)
 	if err != nil {
 		glog.Errorf("error starting server: %s", err)
+	} else {
+		glog.Infof("Listening on port %d for auth on /%s", AuthConfig.Port, AuthConfig.Path)
 	}
 }
