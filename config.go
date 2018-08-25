@@ -6,10 +6,11 @@ const (
 
 // Config defines the basic config of the server
 type Config struct {
-	Port       int
-	JWSCert    string
-	LDAPServer string
-	Rules      []Rules
+	Port          int
+	JWSCert       string
+	LDAPServer    string
+	DefaultDomain string
+	Rules         []Rules
 }
 
 // Rules define a rule pattern
