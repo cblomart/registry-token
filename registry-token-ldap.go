@@ -16,7 +16,7 @@ var AuthConfig Config
 func init() {
 	flag.Parse()
 	// read config file
-	configor.Load(&Config, "/etc/registry-token-ldap.yml")
+	configor.Load(&AuthConfig, "/etc/registry-token-ldap.yml")
 }
 
 func main() {
