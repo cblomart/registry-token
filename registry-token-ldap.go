@@ -10,7 +10,7 @@ import (
 	"github.com/jinzhu/configor"
 )
 
-// Config holds the global configuration
+// AuthConfig holds the global configuration
 var AuthConfig Config
 
 func init() {
