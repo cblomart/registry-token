@@ -73,6 +73,11 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 }
 
 func (ar *AuthRequest) String() string {
+	golg.Infof("Username: %s",ar.UserName)
+	golg.Infof("Password: %s",ar.Password)
+	glog.Infof("Client Id: %s",ar.ClientId)
+	glog.Infof("Service: %s", ar.Service)
+	glog.Infof("Scopes: %s", ar.Scopes)
 	return fmt.Sprintf("%s:%s client_id=%s service=%s", ar.UserName, ar.Password, ar.ClientID, ar.Service)
 }
 
