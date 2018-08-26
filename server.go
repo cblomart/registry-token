@@ -64,6 +64,9 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 	scopes := strings.Split(scopeString, " ")
 	ar.Scopes = []Scope{}
 	for _, v := range scopes {
+		if len(v) == 0 {
+			continue
+		}
 		scope := GetScope(v)
 		if scope != nil {
 			ar.Scopes = append(ar.Scopes, *scope)
