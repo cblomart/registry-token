@@ -10,11 +10,12 @@ import (
 
 // AuthRequest respresent an authentication request
 type AuthRequest struct {
-	UserName string
-	Password string
-	ClientID string
-	Service  string
-	Scopes   []Scope
+	RemoteAddr string
+	UserName   string
+	Password   PasswordString
+	ClientID   string
+	Service    string
+	Scopes     []Scope
 }
 
 // Scope defined the required resources and actions
@@ -37,6 +38,7 @@ func (s PasswordString) String() string {
 // GetAuthRequest gets an authentication request from the http request
 func GetAuthRequest(r *http.Request) *AuthRequest {
 	ar := AuthRequest{}
+	ar.RemoteAddr = r.RemoteAddr
 	if username, password, ok := r.BasicAuth(); ok {
 		ar.UserName = username
 		ar.Password = password
@@ -73,12 +75,7 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 }
 
 func (ar *AuthRequest) String() string {
-	glog.Infof("Username: %s", ar.UserName)
-	glog.Infof("Password: %s", ar.Password)
-	glog.Infof("Client Id: %s", ar.ClientID)
-	glog.Infof("Service: %s", ar.Service)
-	glog.Infof("Scopes: %s", ar.Scopes)
-	return fmt.Sprintf("%s:%s client_id=%s service=%s scopes=%s", ar.UserName, ar.Password, ar.ClientID, ar.Service, ar.Scopes)
+	return fmt.Sprintf("%s:%s - ip='%s' client_id='%s' service='%s' scopes=%s", ar.RemoteAddr, ar.UserName, ar.Password, ar.ClientID, ar.Service, ar.Scopes)
 }
 
 // GetScope ngets the scope from a string
