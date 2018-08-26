@@ -31,9 +31,12 @@ func ldapSearch(limit uint, search string, attributes []string) *ldap.SearchRequ
 }
 
 //Authenticate authenticates the user and returns to groups he is member of and wether or not the user was found.
-func Authenticate(user, password string) ([]string, bool) {
+func Authenticate(user, password string) (AuthzRequest, bool) {
 	binduser := user
-	groups := []string{}
+	azr := AuthzRequest{
+		User:   user,
+		Groups: []string{},
+	}
 	// complete the login
 	if !strings.Contains(user, "@") && !strings.Contains(user, "\\") {
 		binduser = fmt.Sprintf("%s\\%s", AuthConfig.DefaultDomain, user)
@@ -52,20 +55,20 @@ func Authenticate(user, password string) ([]string, bool) {
 		// do nothing
 	default:
 		glog.Errorf("Server provided is incorrect (%s)", server)
-		return groups, false
+		return azr, false
 	}
 	glog.Infof("Authenticate to ldap server: %s", server)
 	// Connect to LDAP
 	l, err := ldapDial(server, AuthConfig.LDAPTls)
 	if err != nil {
 		glog.Errorf("Could not connect to LDAP %s: %s", server, err)
-		return groups, false
+		return azr, false
 	}
 	defer l.Close()
 	err = l.Bind(binduser, password)
 	if err != nil {
 		glog.Errorf("Could not bind to LDAP %s: %s", server, err)
-		return groups, false
+		return azr, false
 	}
 	// search user dn
 	dnsearch := ldapSearch(
@@ -76,11 +79,11 @@ func Authenticate(user, password string) ([]string, bool) {
 	dnresult, err := l.Search(dnsearch)
 	if err != nil {
 		glog.Errorf("Could not search for %s DN: %s", user, err)
-		return groups, true
+		return azr, true
 	}
 	if len(dnresult.Entries) != 1 {
 		glog.Errorf("Unexpected amount of DN returned for %s.", user)
-		return groups, true
+		return azr, true
 	}
 	dn := dnresult.Entries[0].DN
 	// search the groups
@@ -92,10 +95,10 @@ func Authenticate(user, password string) ([]string, bool) {
 	groupresult, err := l.Search(groupsearch)
 	if err != nil {
 		glog.Errorf("Could not search for %s groups: %s", user, err)
-		return groups, true
+		return azr, true
 	}
 	for _, v := range groupresult.Entries {
-		groups = append(groups, v.GetAttributeValue(AuthConfig.LDAPAttribute))
+		azr.Groups = append(azr.Groups, v.GetAttributeValue(AuthConfig.LDAPAttribute))
 	}
-	return groups, true
+	return azr, true
 }
