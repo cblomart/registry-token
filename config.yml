@@ -1,5 +1,5 @@
-jwscert: /etc/registry-token-ldap.crt
-jwskey: /etc/registry-token-ldap.key
+jwscert: /etc/registry-token-ldap/cert.crt
+jwskey: /etc/registry-token-ldap/cert.key
 ldapserver: ad.contoso.com
 ldapbase: "DC=contoso,DC=com"
 defaultdomain: CONTOSO

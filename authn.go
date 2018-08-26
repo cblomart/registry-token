@@ -54,7 +54,7 @@ func Authenticate(user, password string) ([]string, bool) {
 		glog.Errorf("Server provided is incorrect (%s)", server)
 		return groups, false
 	}
-	glog.Infof("Authenticate to ldap server: %s:%d", server, port)
+	glog.Infof("Authenticate to ldap server: %s", server)
 	// Connect to LDAP
 	l, err := ldapDial(server, AuthConfig.LDAPTls)
 	if err != nil {

@@ -16,7 +16,7 @@ var AuthConfig Config
 func init() {
 	flag.Parse()
 	// read config file
-	err := configor.Load(&AuthConfig, "/etc/registry-token-ldap.yml")
+	err := configor.Load(&AuthConfig, "/etc/registry-token-ldap/config.yml")
 	if err != nil {
 		glog.Errorf("Error loading config: %s", err)
 	}

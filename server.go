@@ -108,8 +108,8 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	glog.Infof("Authentication Request: %s", ar.String())
 	_, ok := Authenticate(ar.UserName, string(ar.Password))
 	if !ok {
-		glog.Info("User not authenticated return empty token")
+		glog.Infof("User %s not authenticated return empty token", ar.UserName)
 	}
-	glog.Info("User authenticated check authorizations")
+	glog.Infof("User %s authenticated check authorizations", ar.UserName)
 	fmt.Fprintf(w, "Test page.")
 }
