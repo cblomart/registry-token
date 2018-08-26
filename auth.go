@@ -75,7 +75,7 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 }
 
 func (ar *AuthRequest) String() string {
-	return fmt.Sprintf("%s:%s - ip='%s' client_id='%s' service='%s' scopes=%s", ar.RemoteAddr, ar.UserName, ar.Password, ar.ClientID, ar.Service, ar.Scopes)
+	return fmt.Sprintf("%s:%s - ip='%s' client_id='%s' service='%s' scopes=%s", ar.UserName, ar.Password, ar.RemoteAddr, ar.ClientID, ar.Service, ar.Scopes)
 }
 
 // GetScope ngets the scope from a string
