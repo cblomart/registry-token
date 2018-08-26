@@ -106,5 +106,10 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
 	}
 	glog.Infof("Authentication Request: %s", ar.String())
+	_, ok := Authenticate(ar.UserName, string(ar.Password))
+	if !ok {
+		glog.Info("User not authenticated return empty token")
+	}
+	glog.Info("User authenticated check authorizations")
 	fmt.Fprintf(w, "Test page.")
 }

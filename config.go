@@ -11,6 +11,9 @@ type Config struct {
 	JWSCert       string  `required:"true"`
 	JWSKey        string  `required:"true"`
 	LDAPServer    string  `required:"true"`
+	LDAPTls       bool    `default:"true"`
+	LDAPAttribute string  `default:"SamAccountName"`
+	LDAPBase      string  `required:"true"`
 	DefaultDomain string  `required:"true"`
 	Rules         []Rules `required:"true"`
 }

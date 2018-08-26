@@ -1,6 +1,7 @@
 jwscert: /etc/registry-token-ldap.crt
 jwskey: /etc/registry-token-ldap.key
 ldapserver: ad.contoso.com
+ldapbase: "DC=contoso,DC=com"
 defaultdomain: CONTOSO
 rules:
   # Admin can do all
