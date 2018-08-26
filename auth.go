@@ -41,7 +41,7 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 	ar.RemoteAddr = r.RemoteAddr
 	if username, password, ok := r.BasicAuth(); ok {
 		ar.UserName = username
-		ar.Password = (PasswordString)password
+		ar.Password = PasswordString(password)
 	} else {
 		glog.Errorf("Authentication request didn't have basic authentication")
 		return nil
