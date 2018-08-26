@@ -57,8 +57,7 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 	}
 	scopeString := r.FormValue("scope")
 	if len(scopeString) == 0 {
-		glog.Errorf("No scopes provided")
-		return nil
+		glog.Infof("No scopes provided")
 	}
 	scopes := strings.Split(scopeString, " ")
 	ar.Scopes = []Scope{}
@@ -74,7 +73,7 @@ func GetAuthRequest(r *http.Request) *AuthRequest {
 }
 
 func (ar *AuthRequest) String() string {
-	return fmt.Sprintf("%s:%s client_id=%s service=%s scopes=%s", ar.UserName, ar.Password, ar.ClientID, ar.Service, ar.Scopes)
+	return fmt.Sprintf("%s:%s client_id=%s service=%s", ar.UserName, ar.Password, ar.ClientID, ar.Service)
 }
 
 // GetScope ngets the scope from a string
