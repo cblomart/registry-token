@@ -177,9 +177,8 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		ExpiresIn:   TokenValidity,
 		IssuedAt:    iat.Format(time.RFC3339),
 	}
-	jsonresponse, err := json.MarshalIndent(response, "", "   ")
-	glog.Info("Response:")
-	glog.Info(jsonresponse)
+	jsonresponse, _ := json.MarshalIndent(response, "", "   ")
+	glog.Infof("token: %s", token)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonresponse)
 }

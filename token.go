@@ -68,8 +68,8 @@ func GenerateToken(accesses Accesses, audience string, subject string) (string, 
 		NotBefore:  iat.Unix(),
 		IssuedAt:   iat.Unix(),
 		JWTID:      base64.URLEncoding.EncodeToString(randomBytes),
-		Access:     accesses,
-		Scopes:     accesses.String(),
+		//Access:     accesses,
+		Scopes: accesses.String(),
 	}
 	// get bytes of the parts
 	var joseHeaderBytes, claimSetBytes []byte
