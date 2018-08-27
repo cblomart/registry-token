@@ -64,7 +64,8 @@ func GetAuthRequest(r *http.Request) *AuthnRequest {
 	clientid := r.FormValue("client_id")
 	if len(clientid) == 0 {
 		glog.Error("No ClientId provided")
-		return nil
+	} else {
+		ar.ClientID = clientid
 	}
 	scopeString := r.FormValue("scope")
 	if len(scopeString) == 0 {
