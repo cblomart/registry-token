@@ -34,11 +34,12 @@ type ClaimSet struct {
 	JWTID      string `json:"jti"`
 
 	// Private claims
-	Access []Access `json:"access"`
+	Access []Access `json:"access,omitempty"`
+	Scopes string   `json:"scopes,omitempty"`
 }
 
 // GenerateToken generate a JWS token for the specified accesses
-func GenerateToken(accesses []Access, audience string, subject string) (string, *time.Time, error) {
+func GenerateToken(accesses Accesses, audience string, subject string) (string, *time.Time, error) {
 	// get the private key
 	privkey, err := libtrust.LoadKeyFile(AuthConfig.JWSKey)
 	if err != nil {
@@ -68,6 +69,7 @@ func GenerateToken(accesses []Access, audience string, subject string) (string, 
 		IssuedAt:   iat.Unix(),
 		JWTID:      base64.URLEncoding.EncodeToString(randomBytes),
 		Access:     accesses,
+		Scopes:     accesses.String(),
 	}
 	// get bytes of the parts
 	var joseHeaderBytes, claimSetBytes []byte

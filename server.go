@@ -17,7 +17,7 @@ type AuthnRequest struct {
 	Password   PasswordString
 	ClientID   string
 	Service    string
-	Scopes     []Scope
+	Scopes     Scopes
 }
 
 // Scope defined the required resources and actions
@@ -27,6 +27,22 @@ type Scope struct {
 	Actions []string `json:"actions"`
 }
 
+func (s Scope) String() string {
+	return fmt.Sprintf("%s:%s:%s", s.Type, s.Name, strings.Join(s.Actions, ","))
+}
+
+// Scopes represents a set of scopes
+type Scopes []Scope
+
+func (ss Scopes) String() string {
+	scopes := ""
+	for _, s := range ss {
+		scopes = scopes + " " + s.String()
+	}
+	return scopes
+}
+
+// TokenResponse represents the response structure
 type TokenResponse struct {
 	Token       string `json:"token"`
 	AccessToken string `json:"token_access,omitempty"`
@@ -88,7 +104,7 @@ func GetAuthRequest(r *http.Request) *AuthnRequest {
 }
 
 func (ar *AuthnRequest) String() string {
-	return fmt.Sprintf("%s:%s - ip='%s' client_id='%s' service='%s' scopes=%s", ar.UserName, ar.Password, ar.RemoteAddr, ar.ClientID, ar.Service, ar.Scopes)
+	return fmt.Sprintf("%s:%s - ip='%s' client_id='%s' service='%s' scopes='%s'", ar.UserName, ar.Password, ar.RemoteAddr, ar.ClientID, ar.Service, ar.Scopes)
 }
 
 // GetScope ngets the scope from a string
@@ -130,7 +146,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	glog.Infof("User %s authenticated check authorizations", anr.UserName)
 	if len(anr.Scopes) == 0 {
 		glog.Infof("Authenticating user %s with no scopes: returning empty token", anr.UserName)
-		token, iat, err := GenerateToken([]Access{}, anr.Service, anr.UserName)
+		token, iat, err := GenerateToken(Accesses{}, anr.Service, anr.UserName)
 		if err != nil {
 			glog.Infof("Failed to generate empty token for %s", anr.UserName)
 			http.Error(w, "Authentication failed", http.StatusInternalServerError)

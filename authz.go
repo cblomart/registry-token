@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -18,6 +19,21 @@ type Access struct {
 	Type    string   `json:"type"`
 	Name    string   `json:"name"`
 	Actions []string `json:"actions"`
+}
+
+func (a Access) String() string {
+	return fmt.Sprintf("%s:%s:%s", a.Type, a.Name, strings.Join(a.Actions, ","))
+}
+
+// Accesses represents a set of access
+type Accesses []Access
+
+func (as Accesses) String() string {
+	accesses := ""
+	for _, a := range as {
+		accesses = accesses + " " + a.String()
+	}
+	return accesses
 }
 
 // Eval evaluates a rule
@@ -88,8 +104,8 @@ func checkAccess(request AuthzRequest, scope Scope) *Access {
 }
 
 // Authorize check authorization of a user for the given scopes
-func Authorize(request AuthzRequest, scopes []Scope) []Access {
-	accesses := []Access{}
+func Authorize(request AuthzRequest, scopes []Scope) Accesses {
+	accesses := Accesses{}
 	for _, scope := range scopes {
 		access := checkAccess(request, scope)
 		if access != nil {
