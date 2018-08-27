@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 
 	"net/http"
 
@@ -19,6 +20,16 @@ func init() {
 	err := configor.Load(&AuthConfig, "/etc/registry-token-ldap/config.yml")
 	if err != nil {
 		glog.Errorf("Error loading config: %s", err)
+		return
+	}
+	// check file presence
+	if _, err := os.Stat(AuthConfig.JWSCert); os.IsNotExist(err) {
+		glog.Errorf("JWS certificate does not exist: %s", AuthConfig.JWSCert)
+		return
+	}
+	if _, err := os.Stat(AuthConfig.JWSKey); os.IsNotExist(err) {
+		glog.Errorf("JWS certificate does not exist: %s", AuthConfig.JWSKey)
+		return
 	}
 }
 

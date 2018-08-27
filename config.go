@@ -10,6 +10,7 @@ type Config struct {
 	Path          string `default:"token"`
 	JWSCert       string `required:"true"`
 	JWSKey        string `required:"true"`
+	Issuer        string `required:"true"`
 	LDAPServer    string `required:"true"`
 	LDAPTls       bool   `default:"true"`
 	LDAPAttribute string `default:"SamAccountName"`
