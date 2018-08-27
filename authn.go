@@ -98,7 +98,17 @@ func Authenticate(user, password string) (AuthzRequest, bool) {
 		return azr, true
 	}
 	for _, v := range groupresult.Entries {
-		azr.Groups = append(azr.Groups, v.GetAttributeValue(AuthConfig.LDAPAttribute))
+		attribute := ""
+		for _, a := range v.Attributes {
+			if strings.ToUpper(a.Name) == strings.ToUpper(AuthConfig.LDAPAttribute) {
+				attribute = a.Name
+				break
+			}
+		}
+		if len(attribute) == 0 {
+			continue
+		}
+		azr.Groups = append(azr.Groups, v.GetAttributeValue(attribute))
 	}
 	return azr, true
 }
