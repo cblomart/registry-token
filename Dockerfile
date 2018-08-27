@@ -5,7 +5,7 @@ WORKDIR /go/src/github.com/cblomart/registry-token-ldap/
 RUN go get ./...
 RUN go build  -ldflags="-s -w" -o registry-token-ldap . && upx -9 -q registry-token-ldap
 
-FROM scratch
+FROM alpine
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /go/src/github.com/cblomart/registry-token-ldap/registry-token-ldap /bin/
 COPY config.yml /etc/registry-token-ldap/
