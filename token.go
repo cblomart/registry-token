@@ -48,7 +48,7 @@ func GenerateToken(accesses []Access, audience string, subject string) (string, 
 	// craft the headers
 	joseHeader := &Header{
 		Type:       "JWT",
-		SigningAlg: "ES256",
+		SigningAlg: "RS256",
 		KeyID:      privkey.KeyID(),
 	}
 	// get issued at
