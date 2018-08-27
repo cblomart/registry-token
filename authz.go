@@ -15,9 +15,9 @@ type AuthzRequest struct {
 
 // Access represents a access authorization
 type Access struct {
-	Type    string
-	Name    string
-	Actions []string
+	Type    string   `json:"type"`
+	Name    string   `json:"name"`
+	Actions []string `json:"actions"`
 }
 
 // Eval evaluates a rule
