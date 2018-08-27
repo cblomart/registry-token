@@ -24,12 +24,14 @@ func init() {
 	}
 	// check file presence
 	if _, err := os.Stat(AuthConfig.JWSCert); os.IsNotExist(err) {
-		glog.Errorf("JWS certificate does not exist: %s", AuthConfig.JWSCert)
-		return
+		message := fmt.Sprintf("JWS certificate does not exist: %s", AuthConfig.JWSCert)
+		glog.Errorf(message)
+		panic(message)
 	}
 	if _, err := os.Stat(AuthConfig.JWSKey); os.IsNotExist(err) {
-		glog.Errorf("JWS certificate does not exist: %s", AuthConfig.JWSKey)
-		return
+		message := fmt.Sprintf("JWS certificate does not exist: %s", AuthConfig.JWSKey)
+		glog.Errorf(message)
+		panic(message)
 	}
 }
 
