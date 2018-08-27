@@ -22,9 +22,9 @@ type AuthnRequest struct {
 
 // Scope defined the required resources and actions
 type Scope struct {
-	Type    string
-	Name    string
-	Actions []string
+	Type    string   `json:"type"`
+	Name    string   `json:"name"`
+	Actions []string `json:"actions"`
 }
 
 type TokenResponse struct {
