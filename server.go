@@ -164,6 +164,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonresponse)
 		return
 	}
+	glog.Infof("Autorizing user %s with groups %s", azr.User, azr.Groups)
 	accesses := Authorize(azr, anr.Scopes)
 	token, iat, err := GenerateToken(accesses, anr.Service, anr.UserName)
 	if err != nil {
