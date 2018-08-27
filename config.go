@@ -13,7 +13,7 @@ type Config struct {
 	Issuer        string `required:"true"`
 	LDAPServer    string `required:"true"`
 	LDAPTls       bool   `default:"true"`
-	LDAPAttribute string `default:"SamAccountName"`
+	LDAPAttribute string `default:"sAMAccountName"`
 	LDAPBase      string `required:"true"`
 	DefaultDomain string `required:"true"`
 	Rules         []Rule `required:"true"`
