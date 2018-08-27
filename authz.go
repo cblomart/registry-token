@@ -33,7 +33,7 @@ func (as Accesses) String() string {
 	for _, a := range as {
 		accesses = accesses + " " + a.String()
 	}
-	return accesses
+	return strings.Trim(accesses, " ")
 }
 
 // Eval evaluates a rule

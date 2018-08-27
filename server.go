@@ -39,7 +39,7 @@ func (ss Scopes) String() string {
 	for _, s := range ss {
 		scopes = scopes + " " + s.String()
 	}
-	return scopes
+	return strings.Trim(scopes, " ")
 }
 
 // TokenResponse represents the response structure
