@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -138,7 +139,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 			Token:       token,
 			AccessToken: token,
 			ExpiresIn:   TokenValidity,
-			IssuedAt:    iat.Format("RFC3339"),
+			IssuedAt:    iat.Format(time.RFC3339),
 		}
 		jsonresponse, _ := json.Marshal(response)
 		w.Header().Set("Content-Type", "application/json")
