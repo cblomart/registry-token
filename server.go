@@ -171,14 +171,15 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
 		return
 	}
-	glog.Infof("Generated token: %s", token)
 	response := TokenResponse{
 		Token:       token,
 		AccessToken: token,
 		ExpiresIn:   TokenValidity,
-		IssuedAt:    iat.Format("RFC3339"),
+		IssuedAt:    iat.Format(time.RFC3339),
 	}
-	jsonresponse, _ := json.Marshal(response)
+	jsonresponse, err := json.MarshalIndent(response, "", "   ")
+	glog.Info("Response:")
+	glog.Info(jsonresponse)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonresponse)
 }
