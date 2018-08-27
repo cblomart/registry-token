@@ -41,7 +41,7 @@ func (s PasswordString) String() string {
 	if len(s) == 0 {
 		return ""
 	}
-	return "********"
+	return "*"
 }
 
 // GetAuthRequest gets an authentication request from the http request
