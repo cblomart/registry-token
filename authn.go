@@ -98,6 +98,7 @@ func Authenticate(user, password string) (AuthzRequest, bool) {
 		return azr, true
 	}
 	for _, v := range groupresult.Entries {
+		glog.Infof("got ldap group entry with attributes %s", v.Attributes)
 		azr.Groups = append(azr.Groups, v.GetAttributeValue(AuthConfig.LDAPAttribute))
 	}
 	return azr, true
