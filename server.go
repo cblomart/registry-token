@@ -136,6 +136,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Authentication failed", http.StatusInternalServerError)
 			return
 		}
+		glog.Infof("Generated token: %s", token)
 		response := TokenResponse{
 			Token:       token,
 			AccessToken: token,
@@ -154,6 +155,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
 		return
 	}
+	glog.Infof("Generated token: %s", token)
 	response := TokenResponse{
 		Token:       token,
 		AccessToken: token,
