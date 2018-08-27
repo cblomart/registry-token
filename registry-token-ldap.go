@@ -42,7 +42,7 @@ func init() {
 		glog.Infof("Generating private key saved to %s", AuthConfig.JWSKey)
 	}
 	if _, err := os.Stat(AuthConfig.JWSCert); os.IsNotExist(err) {
-		glog.Infof("JWS Certificate does not exist: %s", AuthConfig.JWSKey)
+		glog.Infof("JWS Certificate does not exist: %s", AuthConfig.JWSCert)
 		glog.Infof("Generating new certificate")
 		privkey, err := libtrust.LoadKeyFile(AuthConfig.JWSKey)
 		if err != nil {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -23,6 +24,13 @@ type Scope struct {
 	Type    string
 	Name    string
 	Actions []string
+}
+
+type TokenResponse struct {
+	Token       string `json:"token"`
+	AccessToken string `json:"token_access,omitempty"`
+	ExpiresIn   int    `json:"expires_in,omitempty"`
+	IssuedAt    string `json:"issued_at,omitempty"`
 }
 
 // PasswordString hides passwords on output
@@ -106,6 +114,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	// check parameters
 	anr := GetAuthRequest(r)
 	if anr == nil {
+		glog.Error("No Authentication request returned")
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
 		return
 	}
@@ -118,9 +127,38 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	glog.Infof("User %s authenticated check authorizations", anr.UserName)
 	if len(anr.Scopes) == 0 {
-		glog.Infof("Authenticating user %s with no scopes: returning empty token")
+		glog.Infof("Authenticating user %s with no scopes: returning empty token", anr.UserName)
+		token, iat, err := GenerateToken([]Access{}, anr.Service, anr.UserName)
+		if err != nil {
+			glog.Infof("Failed to generate empty token for %s", anr.UserName)
+			http.Error(w, "Authentication failed", http.StatusInternalServerError)
+			return
+		}
+		response := TokenResponse{
+			Token:       token,
+			AccessToken: token,
+			ExpiresIn:   TokenValidity,
+			IssuedAt:    iat.Format("RFC3339"),
+		}
+		jsonresponse, _ := json.Marshal(response)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonresponse)
 		return
 	}
-	Authorize(azr, anr.Scopes)
-	fmt.Fprintf(w, "Test page.")
+	accesses := Authorize(azr, anr.Scopes)
+	token, iat, err := GenerateToken(accesses, anr.Service, anr.UserName)
+	if err != nil {
+		glog.Errorf("Could not generate token: %s", err)
+		http.Error(w, "Authentication failed", http.StatusInternalServerError)
+		return
+	}
+	response := TokenResponse{
+		Token:       token,
+		AccessToken: token,
+		ExpiresIn:   TokenValidity,
+		IssuedAt:    iat.Format("RFC3339"),
+	}
+	jsonresponse, _ := json.Marshal(response)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonresponse)
 }
