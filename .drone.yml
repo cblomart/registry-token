@@ -11,12 +11,8 @@ clone:
 pipeline:
   checkgo:
     name: check go
-    image: golang:latest
+    image: cblomart:gobasebuild
     commands:
-    - go get honnef.co/go/tools/cmd/gosimple
-    - go get golang.org/x/lint/golint
-    - go get github.com/gordonklaus/ineffassign
-    - go get github.com/securego/gosec/cmd/gosec/...
     - gosimple ./...
     - gofmt -s -l $(find ./ -name "*.go" | egrep -v "/vendor/")
     - go vet ./...
@@ -26,7 +22,7 @@ pipeline:
     - go tool vet ./..
   checksnyk:
     name: snyck check
-    image: snyk/snyk-cli:npm
+    image: cblomart:gobasebuild
     secrets: [ snyk_token ]
     commands:
     - snyk auth $SNYK_TOKEN
