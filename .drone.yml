@@ -11,6 +11,7 @@ clone:
 pipeline:
   buildamd64:
     name: build amd64
+    group: build
     image: golang:latest
     environment:
     - CGO=0
@@ -21,6 +22,7 @@ pipeline:
     - go build -ldflags '-s -w' -a -o ./releases/amd64/registry-token-ldap .
   buildarm:
     name: build arm
+    group: build
     image: golang:latest
     environment:
     - CGO=0
@@ -30,4 +32,5 @@ pipeline:
     commands:
     - mkdir -p releases/arm
     - go build -ldflags '-s -w' -a -o ./releases/arm/registry-token-ldap .
-    
+    when:
+      event: [ tag ]
