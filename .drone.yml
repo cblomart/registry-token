@@ -1,3 +1,13 @@
 workspace:
   base: /go
   path: src/github.com/cblomart/registry-token-ldap
+
+# clone with tags
+clone:
+  git:
+    image: plugins/git
+    tags: true
+
+pipeline:
+  build:
+    - go build .
