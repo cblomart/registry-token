@@ -27,6 +27,7 @@ pipeline:
   checksnyk:
     name: snyck check
     image: snyk/snyk-cli:npm
+    secrets: [ snyk_token ]
     commands:
     - snyk auth $SNYK_TOKEN
     - snyk test
