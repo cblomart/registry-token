@@ -10,5 +10,8 @@ clone:
 
 pipeline:
   build:
+    name: build amd64
+    image: golang:10.3
+    commands:
     - mkdir -p releases/amd64
     - go build -o ./releases/amd64/registry-token-ldap .
