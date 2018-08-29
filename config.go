@@ -15,6 +15,7 @@ type Config struct {
 	LDAPTls       string `default:"insecure"`
 	LDAPAttribute string `default:"sAMAccountName"`
 	LDAPBase      string `required:"true"`
+	LDAPCa        string
 	DefaultDomain string `required:"true"`
 	Rules         []Rule `required:"true"`
 }

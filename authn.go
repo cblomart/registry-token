@@ -2,7 +2,9 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"strings"
 
 	"github.com/golang/glog"
@@ -12,6 +14,18 @@ import (
 func ldapDial(server string, reqtls string) (*ldap.Conn, error) {
 	insecure := strings.ToUpper(reqtls) == "INSECURE"
 	if len(reqtls) > 0 {
+		if len(AuthConfig.LDAPCa) > 0 {
+			// Load the CA certificate(s)
+			capool := x509.NewCertPool()
+			cacert, err := ioutil.ReadFile("ca.crt")
+			if err != nil {
+				return nil, fmt.Errorf("Could not read ca certs %s: %s", AuthConfig.LDAPCa, err)
+			}
+			if !capool.AppendCertsFromPEM(cacert) {
+				return nil, fmt.Errorf("Could not add ca to capool %s", AuthConfig.LDAPCa)
+			}
+			return ldap.DialTLS("tcp", server, &tls.Config{RootCAs: capool})
+		}
 		return ldap.DialTLS("tcp", server, &tls.Config{InsecureSkipVerify: insecure})
 	}
 	return ldap.Dial("tcp", server)

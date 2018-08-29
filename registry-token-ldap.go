@@ -25,6 +25,13 @@ func init() {
 		glog.Errorf("Error loading config: %s", err)
 		return
 	}
+	// check CA presence
+	if len(AuthConfig.LDAPCa) > 0 {
+		if _, err := os.Stat(AuthConfig.LDAPCa); err != nil {
+			glog.Errorf("Could not generate private key: %s", err)
+			panic(err)
+		}
+	}
 	// check file presence
 	if _, err := os.Stat(AuthConfig.JWSKey); os.IsNotExist(err) {
 		glog.Infof("JWS key does not exist: %s", AuthConfig.JWSKey)
