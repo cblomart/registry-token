@@ -26,7 +26,7 @@ pipeline:
     - go tool vet ./..
   checksnyk:
     name: snyck check
-    image: snyk/snyk-cli
+    image: snyk/snyk-cli:npm
     commands:
     - snyck auth $SNYK_TOKEN
     - snyck test
