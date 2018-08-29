@@ -26,7 +26,7 @@ func ldapDial(server string, reqtls string) (*ldap.Conn, error) {
 			}
 			return ldap.DialTLS("tcp", server, &tls.Config{RootCAs: capool})
 		}
-		return ldap.DialTLS("tcp", server, &tls.Config{InsecureSkipVerify: insecure})
+		return ldap.DialTLS("tcp", server, &tls.Config{InsecureSkipVerify: insecure}) // #nosec G402
 	}
 	return ldap.Dial("tcp", server)
 }
