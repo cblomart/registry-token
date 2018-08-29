@@ -17,11 +17,12 @@ COPY --from=builder /etc/passwd /etc/passwd
 # copy ca-certificates 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-# copy binary
-COPY ./releases/${TARGET}/registry-token-ldap /registry-token-ldap
-
-#copy config
+# copy config
 COPY ./registry-token-ldap.yml /etc/registry-token-ldap.yml
+
+# copy binary
+COPY ./releases/$TARGET/registry-token-ldap /registry-token-ldap
+
 
 USER registry-token-ldap
 
