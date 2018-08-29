@@ -91,7 +91,8 @@ pipeline:
     - docker tag cblomart/registry-token-ldap cblomart/registry-token-ldap:`echo "${DRONE_TAG}" | cut -d. 1`
     when:
       event: [ tag ]
-  dockertags:
+  dockerpush:
+    name: push to docker
     image: docker
     secrets: [ docker_username, docker_password ]
     volumes:
@@ -100,6 +101,7 @@ pipeline:
     - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
     - docker push cblomart/registry-token-ldap
   release:
+    name: push to github
     image: plugins/github-release
     secrets: [ github_token ]
     files:
