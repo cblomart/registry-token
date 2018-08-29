@@ -56,3 +56,19 @@ pipeline:
     - go build -ldflags '-s -w' -a -o ./releases/arm/registry-token-ldap .
     when:
       event: [ tag ]
+  compressamd64:
+    name: compress amd64
+    group: compress
+    image: gruebel/upx
+    commands:
+    - upx --best --lzma -q ./releases/adm64/registry-token-ldap
+    - tar -czf ./releases/registry-token-ldap--arm.tgz -C /releases/amd64/ registry-token-ldap
+  compressarm:
+    name: compress arm
+    group: compress
+    image: gruebel/upx
+    commands:
+    - upx --best --lzma -q ./releases/arm/registry-token-ldap
+    - tar -czf ./releases/registry-token-ldap--amd64.tgz -C /releases/arm/ registry-token-ldap
+    when:
+      event: [ tag ]
