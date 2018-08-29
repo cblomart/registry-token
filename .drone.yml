@@ -80,8 +80,8 @@ pipeline:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     commands:
-    - docker tag cblomart/registry-token-ldap:arm cblomart/registry-token-ldap:arm-${DRONE_TAG} cblomart/registry-token-ldap:arm-$(echo "${DRONE_TAG}" | cut -d. 1,2) cblomart/registry-token-ldap:arm-$(echo "${DRONE_TAG}" | cut -d. 1)
-    - docker tag cblomart/registry-token-ldap cblomart/registry-token-ldap:${DRONE_TAG} cblomart/registry-token-ldap:$(echo "${DRONE_TAG}" | cut -d. 1,2) cblomart/registry-token-ldap:$(echo "${DRONE_TAG}" | cut -d. 1)
+    - docker tag cblomart/registry-token-ldap:arm cblomart/registry-token-ldap:arm-${DRONE_TAG} cblomart/registry-token-ldap:arm-`echo "${DRONE_TAG}" | cut -d. 1,2` cblomart/registry-token-ldap:arm-`echo "${DRONE_TAG}" | cut -d. 1`
+    - docker tag cblomart/registry-token-ldap cblomart/registry-token-ldap:${DRONE_TAG} cblomart/registry-token-ldap:`echo "${DRONE_TAG}" | cut -d. 1,2` cblomart/registry-token-ldap:`echo "${DRONE_TAG}" | cut -d. 1`
     when:
       event: [ tag ]
   dockertags:
