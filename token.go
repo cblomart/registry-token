@@ -13,6 +13,7 @@ import (
 	"github.com/golang/glog"
 )
 
+// TokenValidity is the validity time of the token in seconds
 const TokenValidity = 900
 
 // Header describes the header section of a JSON Web Token.
