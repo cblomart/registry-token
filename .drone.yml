@@ -10,4 +10,5 @@ clone:
 
 pipeline:
   build:
-    - go build .
+    - mkdir -p releases/amd64
+    - go build -o ./releases/amd64/registry-token-ldap .
