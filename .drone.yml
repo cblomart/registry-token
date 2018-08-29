@@ -11,7 +11,7 @@ clone:
 pipeline:
   checkgo:
     name: check go
-    image: cblomart:gobasebuild
+    image: cblomart/gobasebuild
     commands:
     - gosimple ./...
     - gofmt -s -l $(find ./ -name "*.go" | egrep -v "/vendor/")
@@ -22,7 +22,7 @@ pipeline:
     - go tool vet ./..
   checksnyk:
     name: snyck check
-    image: cblomart:gobasebuild
+    image: cblomart/gobasebuild
     secrets: [ snyk_token ]
     commands:
     - snyk auth $SNYK_TOKEN
