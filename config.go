@@ -12,7 +12,7 @@ type Config struct {
 	JWSKey        string `required:"true"`
 	Issuer        string `required:"true"`
 	LDAPServer    string `required:"true"`
-	LDAPTls       bool   `default:"true"`
+	LDAPTls       string `default:"insecure"`
 	LDAPAttribute string `default:"sAMAccountName"`
 	LDAPBase      string `required:"true"`
 	DefaultDomain string `required:"true"`

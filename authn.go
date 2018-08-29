@@ -9,9 +9,10 @@ import (
 	"gopkg.in/ldap.v2"
 )
 
-func ldapDial(server string, usetls bool) (*ldap.Conn, error) {
-	if usetls {
-		return ldap.DialTLS("tcp", server, &tls.Config{InsecureSkipVerify: true})
+func ldapDial(server string, reqtls string) (*ldap.Conn, error) {
+	insecure := strings.ToUpper(reqtls) == "INSECURE"
+	if len(reqtls) > 0 {
+		return ldap.DialTLS("tcp", server, &tls.Config{InsecureSkipVerify: insecure})
 	}
 	return ldap.Dial("tcp", server)
 }
@@ -43,7 +44,7 @@ func Authenticate(user, password string) (AuthzRequest, bool) {
 	}
 	// parse server
 	port := "389"
-	if AuthConfig.LDAPTls {
+	if len(AuthConfig.LDAPTls) > 0 {
 		port = "636"
 	}
 	server := AuthConfig.LDAPServer

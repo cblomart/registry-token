@@ -159,9 +159,20 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 			ExpiresIn:   TokenValidity,
 			IssuedAt:    iat.Format(time.RFC3339),
 		}
-		jsonresponse, _ := json.Marshal(response)
+		jsonresponse, err := json.MarshalIndent(response, "", "   ")
+		if err != nil {
+			glog.Errorf("Could marshall response: %s", err)
+			http.Error(w, "Authentication failed", http.StatusInternalServerError)
+			return
+		}
+		glog.Infof("token: %s", token)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(jsonresponse)
+		_, err = w.Write(jsonresponse)
+		if err != nil {
+			glog.Errorf("Could write repsonse: %s", err)
+			http.Error(w, "Authentication failed", http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 	accesses := Authorize(azr, anr.Scopes)
@@ -177,8 +188,18 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		ExpiresIn:   TokenValidity,
 		IssuedAt:    iat.Format(time.RFC3339),
 	}
-	jsonresponse, _ := json.MarshalIndent(response, "", "   ")
+	jsonresponse, err := json.MarshalIndent(response, "", "   ")
+	if err != nil {
+		glog.Errorf("Could marshall response: %s", err)
+		http.Error(w, "Authentication failed", http.StatusInternalServerError)
+		return
+	}
 	glog.Infof("token: %s", token)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonresponse)
+	_, err = w.Write(jsonresponse)
+	if err != nil {
+		glog.Errorf("Could write repsonse: %s", err)
+		http.Error(w, "Authentication failed", http.StatusInternalServerError)
+		return
+	}
 }
