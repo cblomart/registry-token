@@ -28,8 +28,8 @@ pipeline:
     name: snyck check
     image: snyk/snyk-cli:npm
     commands:
-    - snyck auth $SNYK_TOKEN
-    - snyck test
+    - snyk auth $SNYK_TOKEN
+    - snyk test
   buildamd64:
     name: build amd64
     group: build
