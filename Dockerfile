@@ -1,7 +1,10 @@
 ARG TARGET=amd64
-FROM alpine as builde
+
+FROM alpine as builder
+
 # Create nonroot user
 RUN adduser -D -g '' registry-token-ldap
+
 # Add ca-certificates
 RUN apk --update add ca-certificates
 
