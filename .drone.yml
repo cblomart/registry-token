@@ -20,13 +20,6 @@ pipeline:
     - ineffassign ./
     - gosec ./...
     - go tool vet ./..
-  checksnyk:
-    name: snyck check
-    image: cblomart/gobasebuild
-    secrets: [ snyk_token ]
-    commands:
-    - snyk auth $SNYK_TOKEN
-    - snyk test
   buildamd64:
     name: build amd64
     group: build
@@ -58,13 +51,53 @@ pipeline:
     image: gruebel/upx
     commands:
     - upx --best --lzma -q ./releases/amd64/registry-token-ldap
-    - tar -czf ./releases/registry-token-ldap-${DRONE_TAG}-amd64.tgz -C ./releases/amd64/ registry-token-ldap
+    - tar -czf ./releases/registry-token-ldap-${DRONE_TAG}.amd64.tgz -C ./releases/amd64/ registry-token-ldap
   compressarm:
     name: compress arm
     group: compress
     image: gruebel/upx
     commands:
     - upx --best --lzma -q ./releases/arm/registry-token-ldap
-    - tar -czf ./releases/registry-token-ldap-${DRONE_TAG}-arm.tgz -C ./releases/arm/ registry-token-ldap
+    - tar -czf ./releases/registry-token-ldap-${DRONE_TAG}.arm.tgz -C ./releases/arm/ registry-token-ldap
+    when:
+      event: [ tag ]
+  dockeramd64:
+    image: docker
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+    - docker build -t cblomart/registry-token-ldap -t cblomart/registry-token-ldap:${DRONE_COMMIT_SHA:0:8} --build=arg TARGET=amd64 .
+  dockerarm:
+    image: docker
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+    - docker build -t cblomart/registry-token-ldap:arm -t cblomart/rpi-registry-token-ldap:${DRONE_COMMIT_SHA:0:8} --build=arg TARGET=arm .
+    when:
+      event: [ tag ]
+  dockertags:
+    image: docker
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+    - docker tag cblomart/registry-token-ldap:arm cblomart/registry-token-ldap:arm-${DRONE_TAG} cblomart/registry-token-ldap:arm-$(echo "${DRONE_TAG}" | cut -d. 1,2) cblomart/registry-token-ldap:arm-$(echo "${DRONE_TAG}" | cut -d. 1)
+    - docker tag cblomart/registry-token-ldap cblomart/registry-token-ldap:${DRONE_TAG} cblomart/registry-token-ldap:$(echo "${DRONE_TAG}" | cut -d. 1,2) cblomart/registry-token-ldap:$(echo "${DRONE_TAG}" | cut -d. 1)
+    when:
+      event: [ tag ]
+  dockertags:
+    image: docker
+    secrets: [ docker_username, docker_password ]
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+    - docker push cblomart/registry-token-ldap
+  release:
+    image: plugins/github-release
+    secrets: [ github_token ]
+    files:
+      - releases/*.tgz
+    checksum:
+      - sha256
     when:
       event: [ tag ]
