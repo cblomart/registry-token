@@ -12,6 +12,22 @@ pipeline:
   buildamd64:
     name: build amd64
     image: golang:latest
+    environment:
+    - CGO=0
+    - GOOS=linux
+    - GOARCH=amd64
     commands:
     - mkdir -p releases/amd64
-    - go build -o ./releases/amd64/registry-token-ldap .
+    - go build -ldflags '-s -w' -a -o ./releases/amd64/registry-token-ldap .
+  buildarm:
+    name: build arm
+    image: golang:latest
+    environment:
+    - CGO=0
+    - GOOS=linux
+    - GOARCH=arm
+    - GOARM=5
+    commands:
+    - mkdir -p releases/arm
+    - go build -ldflags '-s -w' -a -o ./releases/arm/registry-token-ldap .
+    
