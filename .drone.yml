@@ -9,7 +9,7 @@ clone:
     tags: true
 
 pipeline:
-  build:
+  buildamd64:
     name: build amd64
     image: golang:10.3
     commands:
