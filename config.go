@@ -1,9 +1,5 @@
 package main
 
-const (
-	folder = "token"
-)
-
 // Config defines the basic config of the server
 type Config struct {
 	Port          uint   `default:"5001"`
