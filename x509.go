@@ -60,7 +60,6 @@ func GenerateKey(alg string) {
 		glog.Errorf("Alogrithm %s not supported", alg)
 		panic(fmt.Errorf("Alogrithm %s not supported", alg))
 	}
-	privkey, err := libtrust.GenerateRSA4096PrivateKey()
 	if err != nil {
 		glog.Errorf("Could not generate private key: %s", err)
 		panic(err)
