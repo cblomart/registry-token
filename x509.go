@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/pem"
+	"errors"
 	"os"
 
 	"github.com/docker/libtrust"
 	"github.com/golang/glog"
-	"github.com/pkg/errors"
 )
 
 // GenerateKey generates a SSL key
