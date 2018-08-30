@@ -20,6 +20,11 @@ pipeline:
     - ineffassign ./
     - gosec ./...
     - go tool vet ./..
+  tests:
+    name: tests
+    image: cblomart/gobasebuild
+    commands:
+      - go test -v --cover
   buildamd64:
     name: build amd64
     group: build
