@@ -60,11 +60,7 @@ func GenerateKey(alg string) {
 		glog.Errorf("Alogrithm %s not supported", alg)
 		panic(fmt.Errorf("Alogrithm %s not supported", alg))
 	}
-	if err != nil {
-		glog.Errorf("Could not generate private key: %s", err)
-		panic(err)
-	}
-	err = libtrust.SaveKey(AuthConfig.JWSKey, privkey)
+	err := libtrust.SaveKey(AuthConfig.JWSKey, privkey)
 	if err != nil {
 		glog.Errorf("Could not save private key: %s", err)
 		panic(err)
