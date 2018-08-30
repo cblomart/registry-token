@@ -87,19 +87,7 @@ func GetAuthRequest(r *http.Request) *AuthnRequest {
 	if len(scopeString) == 0 {
 		glog.Infof("No scopes provided")
 	}
-	scopes := strings.Split(scopeString, " ")
-	ar.Scopes = []Scope{}
-	for _, v := range scopes {
-		if len(v) == 0 {
-			continue
-		}
-		scope := GetScope(v)
-		if scope != nil {
-			ar.Scopes = append(ar.Scopes, *scope)
-		} else {
-			glog.Errorf("Could not parse scope %s", v)
-		}
-	}
+	ar.Scopes = *GetScopes(scopeString)
 	return &ar
 }
 
@@ -107,7 +95,7 @@ func (ar *AuthnRequest) String() string {
 	return fmt.Sprintf("%s:%s - ip='%s' client_id='%s' service='%s' scopes='%s'", ar.UserName, ar.Password, ar.RemoteAddr, ar.ClientID, ar.Service, ar.Scopes)
 }
 
-// GetScope ngets the scope from a string
+// GetScope gets the scope from a string
 func GetScope(s string) *Scope {
 	scope := Scope{}
 	parts := strings.Split(s, ":")
@@ -124,6 +112,24 @@ func GetScope(s string) *Scope {
 		return nil
 	}
 	return &scope
+}
+
+// GetScopes gets scopes from a string
+func GetScopes(s string) *Scopes {
+	ss := strings.Split(s, " ")
+	scopes := Scopes{}
+	for _, v := range ss {
+		if len(v) == 0 {
+			continue
+		}
+		scope := GetScope(v)
+		if scope != nil {
+			scopes = append(scopes, *scope)
+		} else {
+			glog.Errorf("Could not parse scope %s", v)
+		}
+	}
+	return &scopes
 }
 
 // HandleAuth Authenticates and resturns a token.
@@ -146,7 +152,8 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	glog.Infof("User %s authenticated check authorizations", anr.UserName)
 	if len(anr.Scopes) == 0 {
 		glog.Infof("Authenticating user %s with no scopes: returning empty token", anr.UserName)
-		token, iat, err := GenerateToken(Accesses{}, anr.Service, anr.UserName)
+		iat := time.Now().UTC()
+		token, err := GenerateToken(Accesses{}, anr.Service, anr.UserName, iat, GenerateJTI())
 		if err != nil {
 			glog.Infof("Failed to generate empty token for %s", anr.UserName)
 			http.Error(w, "Authentication failed", http.StatusInternalServerError)
@@ -176,7 +183,8 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	accesses := Authorize(azr, anr.Scopes)
-	token, iat, err := GenerateToken(accesses, anr.Service, anr.UserName)
+	iat := time.Now().UTC()
+	token, err := GenerateToken(accesses, anr.Service, anr.UserName, iat, GenerateJTI())
 	if err != nil {
 		glog.Errorf("Could not generate token: %s", err)
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)

@@ -36,6 +36,43 @@ func (as Accesses) String() string {
 	return strings.Trim(accesses, " ")
 }
 
+// GetAccess gets the scope from a string
+func GetAccess(s string) *Access {
+	access := Access{}
+	parts := strings.Split(s, ":")
+	switch len(parts) {
+	case 3:
+		access.Type = parts[0]
+		access.Name = parts[1]
+		access.Actions = strings.Split(parts[2], ",")
+	case 4:
+		access.Type = parts[0]
+		access.Name = fmt.Sprintf("%s:%s", parts[1], parts[2])
+		access.Actions = strings.Split(parts[3], ",")
+	default:
+		return nil
+	}
+	return &access
+}
+
+// GetAccesses gets scopes from a string
+func GetAccesses(s string) *Accesses {
+	ss := strings.Split(s, " ")
+	accesses := Accesses{}
+	for _, v := range ss {
+		if len(s) == 0 {
+			continue
+		}
+		access := GetAccess(v)
+		if access != nil {
+			accesses = append(accesses, *access)
+		} else {
+			glog.Errorf("Could not parse scope %s", v)
+		}
+	}
+	return &accesses
+}
+
 // Eval evaluates a rule
 func (r *Rule) Eval(user string, group string, scope Scope, access *Access) {
 	if scope.Type != "repository" {
