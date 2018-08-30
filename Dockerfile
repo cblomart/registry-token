@@ -1,4 +1,4 @@
-ARG TARGET=amd64
+ARG release_type=amd64
 
 FROM alpine as builder
 
@@ -21,12 +21,13 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 COPY ./config.yml /etc/registry-token-ldap/config.yml
 
 # copy binary
-COPY ./releases/$TARGET/registry-token-ldap /registry-token-ldap
+COPY ./releases/${release_type}/registry-token-ldap /registry-token-ldap
 
-
+# run as user 
 USER registry-token-ldap
 
+# allow sharing of /etc
 VOLUME [ "/etc" ]
 
+# start with logging
 ENTRYPOINT ["/bin/registry-token-ldap", "-logtostderr"] 
-
