@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/pem"
-	"errors"
+	"fmt"
 	"os"
 
 	"github.com/docker/libtrust"
@@ -58,7 +58,7 @@ func GenerateKey(alg string) {
 		privkey = key
 	default:
 		glog.Errorf("Alogrithm %s not supported", alg)
-		panic(errors.Errorf("Alogrithm %s not supported", alg))
+		panic(fmt.Errorf("Alogrithm %s not supported", alg))
 	}
 	privkey, err := libtrust.GenerateRSA4096PrivateKey()
 	if err != nil {
