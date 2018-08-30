@@ -68,7 +68,7 @@ pipeline:
     - /var/run/docker.sock:/var/run/docker.sock
     commands:
     - docker image rm cblomart/registry-token-ldap cblomart/registry-token-ldap:arm --force
-    - docker build -t cblomart/registry-token-ldap -t cblomart/registry-token-ldap:${DRONE_COMMIT_SHA:0:8} --build-arg release_type=amd64 .
+    - docker build --build-arg release_type=amd64 -t cblomart/registry-token-ldap -t cblomart/registry-token-ldap:${DRONE_COMMIT_SHA:0:8} .
   dockerarm:
     name: build docker image arm
     image: docker

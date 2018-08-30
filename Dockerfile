@@ -1,5 +1,3 @@
-ARG release_type=amd64
-
 FROM alpine as builder
 
 # Create nonroot user
@@ -10,6 +8,7 @@ RUN apk --update add ca-certificates
 
 FROM scratch
 LABEL maintainer="cblomart@gmail.com"
+ARG release_type=amd64
 
 # copy password file for users
 COPY --from=builder /etc/passwd /etc/passwd
