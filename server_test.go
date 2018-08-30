@@ -143,7 +143,16 @@ func TestPasswordString_String(t *testing.T) {
 		s    PasswordString
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "a password",
+			s: PasswordString("@P@ssw0rd"),
+			want: "*",
+		},
+		{
+			name: "no password",
+			s: PasswordString(""),
+			want: "",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -325,7 +334,24 @@ func TestGetScopes(t *testing.T) {
 		args args
 		want *Scopes
 	}{
-		// TODO: Add test cases.
+		{
+			name: "one scope",
+			args: args{
+				s: "repository:sample:latest:pull,push repository:foo:push",
+			},
+			want: &Scopes{
+				Scope{
+					Type:    "repository",
+					Name:    "sample:latest",
+					Actions: []string{"pull,push"},
+				},
+				Scope{
+					Type:    "repository",
+					Name:    "foo",
+					Actions: []string{"push"},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
