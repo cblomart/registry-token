@@ -32,7 +32,7 @@ pipeline:
     image: cblomart/gobasebuild
     secrets: [ codecov_token ]
     commands:
-      - courtney -v
+      - courtney -v .
       - curl -s https://codecov.io/bash | bash
   buildamd64:
     name: build amd64
