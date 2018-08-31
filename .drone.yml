@@ -26,7 +26,7 @@ pipeline:
     secrets: [ codecov_token ]
     commands:
       - go test -v -coverprofile=coverage.txt -covermode=atomic
-      - bash < `curl -s https://codecov.io/bash`
+      - curl -s https://codecov.io/bash | bash
   buildamd64:
     name: build amd64
     group: build
