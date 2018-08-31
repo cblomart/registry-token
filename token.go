@@ -73,20 +73,8 @@ func GenerateToken(accesses Accesses, audience string, subject string, iat time.
 		JWTID:      jti,
 		Access:     accesses,
 	}
-	// get bytes of the parts
-	var joseHeaderBytes, claimSetBytes []byte
-	if joseHeaderBytes, err = json.Marshal(joseHeader); err != nil {
-		glog.Errorf("unable to marshal jose header: %s", err)
-		return "", fmt.Errorf("unable to marshal jose header: %s", err)
-	}
-	if claimSetBytes, err = json.Marshal(claimSet); err != nil {
-		glog.Errorf("unable to marshal claim set: %s", err)
-		return "", fmt.Errorf("unable to marshal claim set: %s", err)
-	}
 	// generate jwt pratical payload
-	encodedJoseHeader := joseBase64UrlEncode(joseHeaderBytes)
-	encodedClaimSet := joseBase64UrlEncode(claimSetBytes)
-	encodingToSign := fmt.Sprintf("%s.%s", encodedJoseHeader, encodedClaimSet)
+	encodingToSign := fmt.Sprintf("%s.%s", josePart(joseHeader), josePart(claimSet))
 	// generate signature
 	var signatureBytes []byte
 	if signatureBytes, _, err = privkey.Sign(strings.NewReader(encodingToSign), crypto.SHA256); err != nil {
@@ -97,6 +85,28 @@ func GenerateToken(accesses Accesses, audience string, subject string, iat time.
 	return fmt.Sprintf("%s.%s", encodingToSign, signature), nil
 }
 
+func josePart(v interface{}) string {
+	switch t := v.(type) {
+	case []byte:
+		return joseBase64UrlEncode(t)
+	case Header:
+		return joseBase64UrlEncode(mustMarshal(t))
+	case ClaimSet:
+		return joseBase64UrlEncode(mustMarshal(t))
+	default:
+		panic(fmt.Errorf("Could not convert to jose part %f", t))
+	}
+}
+
 func joseBase64UrlEncode(b []byte) string {
 	return strings.TrimRight(base64.URLEncoding.EncodeToString(b), "=")
+}
+
+func mustMarshal(v interface{}) []byte {
+	bs, err := json.Marshal(v)
+	if err != nil {
+		glog.Errorf("unable to marshal %t: %s", v, err)
+		panic(err)
+	}
+	return bs
 }
