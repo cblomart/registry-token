@@ -20,7 +20,7 @@ func josePart(v interface{}) string {
 	case ClaimSet:
 		return joseBase64UrlEncode(mustMarshal(t))
 	default:
-		panic(fmt.Errorf("Could not convert to jose part %f", t))
+		panic(fmt.Errorf("Could not convert to jose part %v", t))
 	}
 }
 
