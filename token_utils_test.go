@@ -3,7 +3,6 @@ package main
 import (
 	"reflect"
 	"testing"
-	"time"
 )
 
 func TestJosePart(t *testing.T) {
@@ -25,7 +24,8 @@ func TestJosePart(t *testing.T) {
 					KeyID:      "Random ID Key",
 				},
 			},
-			want: "",
+			want:  "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJhbmRvbSBJRCBLZXkifQ",
+			panic: false,
 		},
 		{
 			name: "test jose claims",
@@ -34,21 +34,23 @@ func TestJosePart(t *testing.T) {
 					Issuer:     "issuer",
 					Subject:    "subject",
 					Audience:   "audience",
-					Expiration: time.Now().UTC().Unix() + TokenValidity,
-					NotBefore:  time.Now().UTC().Unix(),
-					IssuedAt:   time.Now().UTC().Unix(),
+					Expiration: 1535721792,
+					NotBefore:  1535720892,
+					IssuedAt:   1535720892,
 					JWTID:      "random bytes",
 					Access:     Accesses{},
 				},
 			},
-			want: "",
+			want:  "eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjE1MzU3MjE3OTIsIm5iZiI6MTUzNTcyMDg5MiwiaWF0IjoxNTM1NzIwODkyLCJqdGkiOiJyYW5kb20gYnl0ZXMifQ",
+			panic: false,
 		},
 		{
 			name: "test byte array",
 			args: args{
 				v: []byte("random bytes"),
 			},
-			want: "",
+			want:  "cmFuZG9tIGJ5dGVz",
+			panic: false,
 		},
 		{
 			name: "test an unsupported object",
@@ -69,13 +71,14 @@ func TestJosePart(t *testing.T) {
 				if got := JosePart(tt.args.v); got != tt.want {
 					t.Errorf("JosePart() = %v, want %v", got, tt.want)
 				}
+			} else {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("JosePart() wants panic")
+					}
+				}()
+				JosePart(tt.args.v)
 			}
-			defer func() {
-				if r := recover(); r == nil {
-					t.Errorf("JosePart() wants panic")
-				}
-			}()
-			JosePart(tt.args.v)
 		})
 	}
 }
@@ -105,16 +108,71 @@ func TestMustMarshal(t *testing.T) {
 		v interface{}
 	}
 	tests := []struct {
-		name string
-		args args
-		want []byte
+		name  string
+		args  args
+		want  []byte
+		panic bool
 	}{
-		// TODO: Add test cases.
+
+		{
+			name: "test jose header",
+			args: args{
+				v: &Header{
+					Type:       "JWT",
+					SigningAlg: "RS256",
+					KeyID:      "Random ID Key",
+				},
+			},
+			want:  []byte("{\"typ\":\"JWT\",\"alg\":\"RS256\",\"kid\":\"Random ID Key\"}"),
+			panic: false,
+		},
+		{
+			name: "test jose claims",
+			args: args{
+				v: &ClaimSet{
+					Issuer:     "issuer",
+					Subject:    "subject",
+					Audience:   "audience",
+					Expiration: 1535721623,
+					NotBefore:  1535720723,
+					IssuedAt:   1535720723,
+					JWTID:      "random bytes",
+					Access:     Accesses{},
+				},
+			},
+			want:  []byte("{\"iss\":\"issuer\",\"sub\":\"subject\",\"aud\":\"audience\",\"exp\":1535721623,\"nbf\":1535720723,\"iat\":1535720723,\"jti\":\"random bytes\"}"),
+			panic: false,
+		},
+		{
+			name: "test byte array",
+			args: args{
+				v: []byte("random bytes"),
+			},
+			want:  []byte("\"cmFuZG9tIGJ5dGVz\""),
+			panic: false,
+		},
+		{
+			name: "test an unsupported object",
+			args: args{
+				v: make(chan int),
+			},
+			panic: true,
+			want:  []byte(""),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MustMarshal(tt.args.v); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MustMarshal() = %v, want %v", got, tt.want)
+			if !tt.panic {
+				if got := MustMarshal(tt.args.v); !reflect.DeepEqual(string(got), string(tt.want)) {
+					t.Errorf("MustMarshal() = %v, want %v", string(got), string(tt.want))
+				}
+			} else {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("JosePart() wants panic")
+					}
+				}()
+				MustMarshal(tt.args.v)
 			}
 		})
 	}
