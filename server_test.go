@@ -346,7 +346,8 @@ func TestGetScopes(t *testing.T) {
 					Actions: []string{"pull,push"},
 				},
 			},
-		}, {
+		},
+		{
 			name: "two scope",
 			args: args{
 				s: "repository:sample:latest:pull,push repository:foo:push",
