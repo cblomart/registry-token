@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"fmt"
 	"net/http"
 	"reflect"
 	"testing"
@@ -179,7 +180,7 @@ func TestGetAuthRequest(t *testing.T) {
 				r: &http.Request{
 					Header: http.Header{
 						"Authorization": []string{
-							base64.URLEncoding.EncodeToString([]byte("username:password")),
+							fmt.Sprintf("Basic %s", base64.URLEncoding.EncodeToString([]byte("username:password"))),
 						},
 					},
 				},
