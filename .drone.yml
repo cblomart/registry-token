@@ -23,8 +23,10 @@ pipeline:
   tests:
     name: tests
     image: cblomart/gobasebuild
+    secrets: [ codecov_token ]
     commands:
-      - go test -v --cover
+      - go test -v -coverprofile=coverage.txt -covermode=atomic
+      - bash <(curl -s https://codecov.io/bash)
   buildamd64:
     name: build amd64
     group: build
