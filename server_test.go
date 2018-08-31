@@ -317,8 +317,10 @@ func TestGetScope(t *testing.T) {
 			got := GetScope(tt.args.s)
 			if got != nil && tt.want == nil {
 				t.Errorf("GetScope() = %v, want nil", got)
-			} else if !reflect.DeepEqual(got.String(), tt.want.String()) {
-				t.Errorf("GetScope() = %v, want %v", got, tt.want)
+			} else if got != nil && tt.want != nil {
+				if !reflect.DeepEqual(got.String(), tt.want.String()) {
+					t.Errorf("GetScope() = %v, want %v", got, tt.want)
+				}
 			}
 		})
 	}
