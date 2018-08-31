@@ -145,12 +145,12 @@ func TestPasswordString_String(t *testing.T) {
 	}{
 		{
 			name: "a password",
-			s: PasswordString("@P@ssw0rd"),
+			s:    PasswordString("@P@ssw0rd"),
 			want: "*",
 		},
 		{
 			name: "no password",
-			s: PasswordString(""),
+			s:    PasswordString(""),
 			want: "",
 		},
 	}
@@ -336,6 +336,18 @@ func TestGetScopes(t *testing.T) {
 	}{
 		{
 			name: "one scope",
+			args: args{
+				s: "repository:sample:latest:pull,push",
+			},
+			want: &Scopes{
+				Scope{
+					Type:    "repository",
+					Name:    "sample:latest",
+					Actions: []string{"pull,push"},
+				},
+			},
+		}, {
+			name: "two scope",
 			args: args{
 				s: "repository:sample:latest:pull,push repository:foo:push",
 			},
