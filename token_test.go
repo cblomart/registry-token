@@ -2,9 +2,9 @@ package main
 
 import (
 	"io/ioutil"
+	"os"
 	"testing"
 	"time"
-	"os"
 )
 
 const (

@@ -41,7 +41,8 @@ type ClaimSet struct {
 // GenerateJTI generates JTI for token
 func GenerateJTI() string {
 	randomBytes := make([]byte, 15)
-	if _, err := rand.Read(randomBytes); err != nil {
+	_, err := rand.Read(randomBytes)
+	if err != nil {
 		glog.Errorf("unable to read random bytes for jwt id: %s", err)
 		return ""
 	}
