@@ -301,7 +301,24 @@ func TestAuthnRequest_String(t *testing.T) {
 		ar   *AuthnRequest
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "auth request to string",
+			ar: &AuthnRequest{
+				RemoteAddr: "127.0.0.1:54657",
+				UserName:   "username",
+				Password:   PasswordString("password"),
+				ClientID:   "Docker",
+				Service:    "registry.docker.io",
+				Scopes: Scopes{
+					Scope{
+						Type:    "repository",
+						Name:    "cblomart/foo:latest",
+						Actions: []string{"pull", "push"},
+					},
+				},
+			},
+			want: "username:* - ip='127.0.0.1:54657' client_id='Docker' service='registry.docker.io' scopes='repository:cblomart/foo:latest:pull,push'",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
