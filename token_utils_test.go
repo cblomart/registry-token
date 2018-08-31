@@ -11,9 +11,10 @@ func TestJosePart(t *testing.T) {
 		v interface{}
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name  string
+		args  args
+		want  string
+		panic bool
 	}{
 		{
 			name: "test jose header",
@@ -58,14 +59,23 @@ func TestJosePart(t *testing.T) {
 					Actions: []string{"pull", "push"},
 				},
 			},
-			want: "",
+			panic: true,
+			want:  "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := JosePart(tt.args.v); got != tt.want {
-				t.Errorf("JosePart() = %v, want %v", got, tt.want)
+			if !tt.panic {
+				if got := JosePart(tt.args.v); got != tt.want {
+					t.Errorf("JosePart() = %v, want %v", got, tt.want)
+				}
 			}
+			defer func() {
+				if r := recover(); r == nil {
+					t.Errorf("JosePart() wants panic")
+				}
+			}()
+			JosePart(tt.args.v)
 		})
 	}
 }
