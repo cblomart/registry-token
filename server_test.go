@@ -172,7 +172,13 @@ func TestGetAuthRequest(t *testing.T) {
 		args args
 		want *AuthnRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty request",
+			args: args{
+				r: &http.Request{},
+			},
+			want: nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
