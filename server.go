@@ -116,12 +116,12 @@ func GetScope(s string) *Scope {
 
 // GetScopes gets scopes from a string
 func GetScopes(s string) *Scopes {
+	// trim input
+	s = strings.Trim(s, " ")
+	// split scopes
 	ss := strings.Split(s, " ")
 	scopes := Scopes{}
 	for _, v := range ss {
-		if len(v) == 0 {
-			continue
-		}
 		scope := GetScope(v)
 		if scope != nil {
 			scopes = append(scopes, *scope)

@@ -314,7 +314,10 @@ func TestGetScope(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetScope(tt.args.s); !reflect.DeepEqual(got.String(), tt.want.String()) {
+			got := GetScope(tt.args.s)
+			if got != nil && tt.want == nil {
+				t.Errorf("GetScope() = %v, want nil", got)
+			} else if !reflect.DeepEqual(got.String(), tt.want.String()) {
 				t.Errorf("GetScope() = %v, want %v", got, tt.want)
 			}
 		})
@@ -378,6 +381,19 @@ func TestGetScopes(t *testing.T) {
 					Type:    "repository",
 					Name:    "foo",
 					Actions: []string{"push"},
+				},
+			},
+		},
+		{
+			name: "two scope with one not parseable",
+			args: args{
+				s: "repository:sample:latest:pull,push cblomart/foo:push",
+			},
+			want: &Scopes{
+				Scope{
+					Type:    "repository",
+					Name:    "sample:latest",
+					Actions: []string{"pull,push"},
 				},
 			},
 		},
