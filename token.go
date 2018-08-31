@@ -73,13 +73,12 @@ func GenerateToken(accesses Accesses, audience string, subject string, iat time.
 		Access:     accesses,
 	}
 	// generate jwt pratical payload
-	encodingToSign := fmt.Sprintf("%s.%s", josePart(joseHeader), josePart(claimSet))
+	encodingToSign := fmt.Sprintf("%s.%s", JosePart(joseHeader), JosePart(claimSet))
 	// generate signature
 	var signatureBytes []byte
 	if signatureBytes, _, err = privkey.Sign(strings.NewReader(encodingToSign), crypto.SHA256); err != nil {
 		glog.Errorf("unable to sign jwt payload: %s", err)
 		return "", fmt.Errorf("unable to sign jwt payload: %s", err)
 	}
-	signature := joseBase64UrlEncode(signatureBytes)
-	return fmt.Sprintf("%s.%s", encodingToSign, signature), nil
+	return fmt.Sprintf("%s.%s", encodingToSign, JosePart(signatureBytes)), nil
 }

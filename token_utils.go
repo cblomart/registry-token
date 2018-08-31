@@ -1,5 +1,3 @@
-// +build !test
-
 package main
 
 import (
@@ -11,24 +9,27 @@ import (
 	"github.com/golang/glog"
 )
 
-func josePart(v interface{}) string {
+// JosePart return the object as a JWT JOSE part.
+func JosePart(v interface{}) string {
 	switch t := v.(type) {
 	case []byte:
-		return joseBase64UrlEncode(t)
+		return JoseBase64UrlEncode(t)
 	case *Header:
-		return joseBase64UrlEncode(mustMarshal(t))
+		return JoseBase64UrlEncode(MustMarshal(t))
 	case *ClaimSet:
-		return joseBase64UrlEncode(mustMarshal(t))
+		return JoseBase64UrlEncode(MustMarshal(t))
 	default:
 		panic(fmt.Errorf("Could not convert to jose part %v", t))
 	}
 }
 
-func joseBase64UrlEncode(b []byte) string {
+// JoseBase64UrlEncode encodes a byte arrays as Base64 for JWT
+func JoseBase64UrlEncode(b []byte) string {
 	return strings.TrimRight(base64.URLEncoding.EncodeToString(b), "=")
 }
 
-func mustMarshal(v interface{}) []byte {
+// MustMarshal marshall an objects to json not tollerating issues
+func MustMarshal(v interface{}) []byte {
 	bs, err := json.Marshal(v)
 	if err != nil {
 		glog.Errorf("unable to marshal %t: %s", v, err)
