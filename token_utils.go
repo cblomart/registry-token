@@ -15,9 +15,9 @@ func josePart(v interface{}) string {
 	switch t := v.(type) {
 	case []byte:
 		return joseBase64UrlEncode(t)
-	case Header:
+	case *Header:
 		return joseBase64UrlEncode(mustMarshal(t))
-	case ClaimSet:
+	case *ClaimSet:
 		return joseBase64UrlEncode(mustMarshal(t))
 	default:
 		panic(fmt.Errorf("Could not convert to jose part %v", t))
