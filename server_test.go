@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"net/http"
 	"reflect"
 	"testing"
@@ -172,6 +173,19 @@ func TestGetAuthRequest(t *testing.T) {
 		args args
 		want *AuthnRequest
 	}{
+		{
+			name: "full request",
+			args: args{
+				r: &http.Request{
+					Header: http.Header{
+						"Authorization": []string{
+							base64.URLEncoding.EncodeToString([]byte("username:password")),
+						},
+					},
+				},
+			},
+			want: nil,
+		},
 		{
 			name: "empty request",
 			args: args{
