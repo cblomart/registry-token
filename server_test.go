@@ -297,6 +297,20 @@ func TestGetScope(t *testing.T) {
 				Name: "cblomart/foo:latest",
 			},
 		},
+		{
+			name: "too few fields",
+			args: args{
+				s: "cblomart/foo:pull,push",
+			},
+			want: nil,
+		},
+		{
+			name: "too many fields",
+			args: args{
+				s: "repository:cblomart/foo:latest:pull,push:hey",
+			},
+			want: nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
