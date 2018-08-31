@@ -6,7 +6,7 @@ RUN adduser -D -g '' registry-token-ldap
 # Add ca-certificates
 RUN apk --update add ca-certificates
 
-FROM busybox
+FROM alpine
 LABEL maintainer="cblomart@gmail.com"
 ARG release_type=amd64
 
