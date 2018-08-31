@@ -126,7 +126,7 @@ func TestGenerateJTI(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GenerateJTI(); len(got) == 0 {
+			if got, _ := GenerateJTI(); len(got) == 0 {
 				t.Errorf("GenerateJTI() = empty")
 			}
 		})

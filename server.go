@@ -150,10 +150,16 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	glog.Infof("User %s authenticated check authorizations", anr.UserName)
+	jti, err := GenerateJTI()
+	if err != nil {
+		glog.Infof("Failed to generate unique token id")
+		http.Error(w, "Authentication failed", http.StatusInternalServerError)
+		return
+	}
 	if len(anr.Scopes) == 0 {
 		glog.Infof("Authenticating user %s with no scopes: returning empty token", anr.UserName)
 		iat := time.Now().UTC()
-		token, err := GenerateToken(Accesses{}, anr.Service, anr.UserName, iat, GenerateJTI())
+		token, err := GenerateToken(Accesses{}, anr.Service, anr.UserName, iat, jti)
 		if err != nil {
 			glog.Infof("Failed to generate empty token for %s", anr.UserName)
 			http.Error(w, "Authentication failed", http.StatusInternalServerError)
@@ -184,7 +190,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	accesses := Authorize(azr, anr.Scopes)
 	iat := time.Now().UTC()
-	token, err := GenerateToken(accesses, anr.Service, anr.UserName, iat, GenerateJTI())
+	token, err := GenerateToken(accesses, anr.Service, anr.UserName, iat, jti)
 	if err != nil {
 		glog.Errorf("Could not generate token: %s", err)
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)

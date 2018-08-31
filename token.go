@@ -39,14 +39,14 @@ type ClaimSet struct {
 }
 
 // GenerateJTI generates JTI for token
-func GenerateJTI() string {
+func GenerateJTI() (string, error) {
 	randomBytes := make([]byte, 15)
 	_, err := rand.Read(randomBytes)
 	if err != nil {
 		glog.Errorf("unable to read random bytes for jwt id: %s", err)
-		return ""
+		return "", fmt.Errorf("unable to read random bytes for jwt id: %s", err)
 	}
-	return base64.URLEncoding.EncodeToString(randomBytes)
+	return base64.URLEncoding.EncodeToString(randomBytes), nil
 }
 
 // GenerateToken generate a JWS token for the specified accesses
