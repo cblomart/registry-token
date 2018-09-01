@@ -53,7 +53,7 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 	if len(anr.Scopes) == 0 {
 		glog.Infof("Authenticating user %s with no scopes: returning empty token", anr.UserName)
 		iat := time.Now().UTC()
-		token, err := GenerateToken(Accesses{}, anr.Service, anr.UserName, iat, jti)
+		token, err := GenerateToken(Scopes{}, anr.Service, anr.UserName, iat, jti)
 		if err != nil {
 			glog.Infof("Failed to generate empty token for %s", anr.UserName)
 			http.Error(w, "Authentication failed", http.StatusInternalServerError)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -15,19 +14,26 @@ type AuthzRequest struct {
 }
 
 // Access represents a access authorization
+/*
 type Access struct {
 	Type    string   `json:"type"`
 	Name    string   `json:"name"`
 	Actions []string `json:"actions"`
 }
+*/
 
+/*
 func (a Access) String() string {
 	return fmt.Sprintf("%s:%s:%s", a.Type, a.Name, strings.Join(a.Actions, ","))
 }
+*/
 
 // Accesses represents a set of access
+/*
 type Accesses []Access
+*/
 
+/*
 func (as Accesses) String() string {
 	accesses := ""
 	for _, a := range as {
@@ -35,8 +41,10 @@ func (as Accesses) String() string {
 	}
 	return strings.Trim(accesses, " ")
 }
+*/
 
 // GetAccess gets the scope from a string
+/*
 func GetAccess(s string) *Access {
 	access := Access{}
 	parts := strings.Split(s, ":")
@@ -54,8 +62,10 @@ func GetAccess(s string) *Access {
 	}
 	return &access
 }
+*/
 
 // GetAccesses gets scopes from a string
+/*
 func GetAccesses(s string) *Accesses {
 	ss := strings.Split(s, " ")
 	accesses := Accesses{}
@@ -72,9 +82,10 @@ func GetAccesses(s string) *Accesses {
 	}
 	return &accesses
 }
+*/
 
 // Eval evaluates a rule
-func (r *Rule) Eval(user string, group string, scope Scope, access *Access) {
+func (r *Rule) Eval(user string, group string, scope Scope, access *Scope) {
 	if scope.Type != "repository" {
 		glog.Errorf("Requested scope is not repository (%s)", scope.Type)
 		return
@@ -119,8 +130,8 @@ func (r *Rule) Eval(user string, group string, scope Scope, access *Access) {
 
 }
 
-func checkAccess(request AuthzRequest, scope Scope) *Access {
-	access := Access{
+func checkAccess(request AuthzRequest, scope Scope) *Scope {
+	access := Scope{
 		Type:    scope.Type,
 		Name:    scope.Name,
 		Actions: []string{},
@@ -141,8 +152,8 @@ func checkAccess(request AuthzRequest, scope Scope) *Access {
 }
 
 // Authorize check authorization of a user for the given scopes
-func Authorize(request AuthzRequest, scopes []Scope) Accesses {
-	accesses := Accesses{}
+func Authorize(request AuthzRequest, scopes []Scope) Scopes {
+	accesses := Scopes{}
 	for _, scope := range scopes {
 		access := checkAccess(request, scope)
 		if access != nil {
