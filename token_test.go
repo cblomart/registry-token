@@ -60,7 +60,7 @@ HwIozQVzYxsPicPBWfnGosshqvO6/0cbxGrCQjREc2GyaQ==
 
 func TestGenerateToken(t *testing.T) {
 	type args struct {
-		accesses Accesses
+		accesses Scopes
 		audience string
 		subject  string
 		iat      time.Time
@@ -82,7 +82,7 @@ func TestGenerateToken(t *testing.T) {
 		{
 			name: "empty token",
 			args: args{
-				accesses: *GetAccesses("reposiotry:test/sample:latest:pull,push repository:cblomart/foo:pull"),
+				accesses: *GetScopes("reposiotry:test/sample:latest:pull,push repository:cblomart/foo:pull"),
 				audience: "registry.docker.io",
 				subject:  "cblomart",
 				iat:      iat,

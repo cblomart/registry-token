@@ -38,7 +38,7 @@ func TestJosePart(t *testing.T) {
 					NotBefore:  1535720892,
 					IssuedAt:   1535720892,
 					JWTID:      "random bytes",
-					Access:     Accesses{},
+					Access:     Scopes{},
 				},
 			},
 			want:  "eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjE1MzU3MjE3OTIsIm5iZiI6MTUzNTcyMDg5MiwiaWF0IjoxNTM1NzIwODkyLCJqdGkiOiJyYW5kb20gYnl0ZXMifQ",
@@ -55,7 +55,7 @@ func TestJosePart(t *testing.T) {
 		{
 			name: "test an unsupported object",
 			args: args{
-				v: Access{
+				v: Scope{
 					Type:    "repository",
 					Name:    "sample",
 					Actions: []string{"pull", "push"},
@@ -137,7 +137,7 @@ func TestMustMarshal(t *testing.T) {
 					NotBefore:  1535720723,
 					IssuedAt:   1535720723,
 					JWTID:      "random bytes",
-					Access:     Accesses{},
+					Access:     Scopes{},
 				},
 			},
 			want:  []byte("{\"iss\":\"issuer\",\"sub\":\"subject\",\"aud\":\"audience\",\"exp\":1535721623,\"nbf\":1535720723,\"iat\":1535720723,\"jti\":\"random bytes\"}"),
