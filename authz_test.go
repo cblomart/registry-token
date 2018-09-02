@@ -233,9 +233,13 @@ func TestAuthorize(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			AuthConfig = Config{
+				Rules: tt.args.rules,
+			}
 			if got := Authorize(tt.args.request, *GetScopes(tt.args.scopes)); got.String() != tt.want {
 				t.Errorf("Authorize() = %v, want %v", got, tt.want)
 			}
+			AuthConfig = Config{}
 		})
 	}
 }
