@@ -1,7 +1,6 @@
 package main
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -234,7 +233,7 @@ func TestAuthorize(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Authorize(tt.args.request, tt.args.scopes); !reflect.DeepEqual(got, tt.want) {
+			if got := Authorize(tt.args.request, *GetScopes(tt.args.scopes)); got.String() != tt.want {
 				t.Errorf("Authorize() = %v, want %v", got, tt.want)
 			}
 		})
