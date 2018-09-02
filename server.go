@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -50,39 +49,11 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
 		return
 	}
+	accesses := Scopes{}
 	if len(anr.Scopes) == 0 {
 		glog.Infof("Authenticating user %s with no scopes: returning empty token", anr.UserName)
-		iat := time.Now().UTC()
-		token, err := GenerateToken(Scopes{}, anr.Service, anr.UserName, iat, jti)
-		if err != nil {
-			glog.Infof("Failed to generate empty token for %s", anr.UserName)
-			http.Error(w, "Authentication failed", http.StatusInternalServerError)
-			return
-		}
-		glog.Infof("Generated token: %s", token)
-		response := TokenResponse{
-			Token:       token,
-			AccessToken: token,
-			ExpiresIn:   TokenValidity,
-			IssuedAt:    iat.Format(time.RFC3339),
-		}
-		jsonresponse, err := json.MarshalIndent(response, "", "   ")
-		if err != nil {
-			glog.Errorf("Could marshall response: %s", err)
-			http.Error(w, "Authentication failed", http.StatusInternalServerError)
-			return
-		}
-		glog.Infof("token: %s", token)
-		w.Header().Set("Content-Type", "application/json")
-		_, err = w.Write(jsonresponse)
-		if err != nil {
-			glog.Errorf("Could write repsonse: %s", err)
-			http.Error(w, "Authentication failed", http.StatusInternalServerError)
-			return
-		}
-		return
+		accesses = Authorize(azr, anr.Scopes)
 	}
-	accesses := Authorize(azr, anr.Scopes)
 	iat := time.Now().UTC()
 	token, err := GenerateToken(accesses, anr.Service, anr.UserName, iat, jti)
 	if err != nil {
@@ -90,24 +61,23 @@ func HandleAuth(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
 		return
 	}
+	glog.Infof("token: %s", token)
+	w.Header().Set("Content-Type", "application/json")
+	_, err = w.Write(GenerateTokenResponse(token, iat))
+	if err != nil {
+		glog.Errorf("Could write repsonse: %s", err)
+		http.Error(w, "Authentication failed", http.StatusInternalServerError)
+		return
+	}
+}
+
+// GenerateTokenResponse generate the json repsonse for a token request
+func GenerateTokenResponse(token string, iat time.Time) []byte {
 	response := TokenResponse{
 		Token:       token,
 		AccessToken: token,
 		ExpiresIn:   TokenValidity,
 		IssuedAt:    iat.Format(time.RFC3339),
 	}
-	jsonresponse, err := json.MarshalIndent(response, "", "   ")
-	if err != nil {
-		glog.Errorf("Could marshall response: %s", err)
-		http.Error(w, "Authentication failed", http.StatusInternalServerError)
-		return
-	}
-	glog.Infof("token: %s", token)
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonresponse)
-	if err != nil {
-		glog.Errorf("Could write repsonse: %s", err)
-		http.Error(w, "Authentication failed", http.StatusInternalServerError)
-		return
-	}
+	return MustMarshal(response)
 }
