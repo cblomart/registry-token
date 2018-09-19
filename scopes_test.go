@@ -18,7 +18,7 @@ func TestScope_String(t *testing.T) {
 				Name:    "sample",
 				Actions: []string{"push", "pull"},
 			},
-			want: "repository:sample:push,pull",
+			want: "repository:sample:pull,push",
 		},
 		{
 			name: "pull access to simple repository",
@@ -54,7 +54,7 @@ func TestScope_String(t *testing.T) {
 				Name:    "sample:latest",
 				Actions: []string{"push", "pull"},
 			},
-			want: "repository:sample:latest:push,pull",
+			want: "repository:sample:latest:pull,push",
 		},
 		{
 			name: "pull access to tagged repository",
