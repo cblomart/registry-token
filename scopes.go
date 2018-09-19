@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/golang/glog"
@@ -15,6 +16,7 @@ type Scope struct {
 }
 
 func (s Scope) String() string {
+	sort.Strings(s.Actions)
 	return fmt.Sprintf("%s:%s:%s", s.Type, s.Name, strings.Join(s.Actions, ","))
 }
 
