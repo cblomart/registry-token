@@ -238,7 +238,7 @@ func TestRule_Eval(t *testing.T) {
 			want: "repository:people/foo:pull,push",
 		},
 		{
-			name: "full user access to specific reposistory with pull access already granted",
+			name: "full user access to specific reposistory with push access already granted",
 			r:    &Rule{User: "john", Group: "", Match: "", Actions: []string{"push", "pull"}},
 			args: args{
 				user:   "john",
