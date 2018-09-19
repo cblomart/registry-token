@@ -117,6 +117,17 @@ func TestRule_Eval(t *testing.T) {
 			want: "repository:people/foo:pull,push",
 		},
 		{
+			name: "full user access to dynamic reposistory denied as wrong user",
+			r:    &Rule{User: "john", Group: "", Match: "${user}/.*", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "jane",
+				group:  "",
+				scope:  Scope{Type: "repository", Name: "john/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{},
+			},
+			want: "repository:people/foo:",
+		},
+		{
 			name: "push user access to dynamic reposistory",
 			r:    &Rule{User: "john", Group: "", Match: "${user}/.*", Actions: []string{"push"}},
 			args: args{
@@ -161,6 +172,17 @@ func TestRule_Eval(t *testing.T) {
 			want: "repository:project/foo:pull,push",
 		},
 		{
+			name: "full group access to dynamic repositories denied as wrong group",
+			r:    &Rule{User: "john", Group: "project", Match: "${group}/.*", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "john",
+				group:  "otherproject",
+				scope:  Scope{Type: "repository", Name: "project/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{},
+			},
+			want: "repository:project/foo:",
+		},
+		{
 			name: "push group access to dynamic repositories",
 			r:    &Rule{User: "john", Group: "project", Match: "${group}/.*", Actions: []string{"push"}},
 			args: args{
@@ -192,6 +214,39 @@ func TestRule_Eval(t *testing.T) {
 				access: &Scope{},
 			},
 			want: "repository:project/foo:",
+		},
+		{
+			name: "full user access to specific reposistory",
+			r:    &Rule{User: "john", Group: "", Match: "", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "john",
+				group:  "",
+				scope:  Scope{Type: "namespace", Name: "people/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{},
+			},
+			want: "namespace:people/foo:",
+		},
+		{
+			name: "full user access to specific reposistory with pull access already granted",
+			r:    &Rule{User: "john", Group: "", Match: "", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "john",
+				group:  "",
+				scope:  Scope{Type: "repository", Name: "people/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "people/foo", Actions: []string{"pull"}},
+			},
+			want: "repository:people/foo:pull,push",
+		},
+		{
+			name: "full user access to specific reposistory with pull access already granted",
+			r:    &Rule{User: "john", Group: "", Match: "", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "john",
+				group:  "",
+				scope:  Scope{Type: "repository", Name: "people/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "people/foo", Actions: []string{"push"}},
+			},
+			want: "repository:people/foo:pull,push",
 		},
 	}
 	for _, tt := range tests {
