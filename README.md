@@ -10,3 +10,31 @@ This plugin is oriented to AD so the username will be matched to SamAccountName 
 
 The set of rules will be evaluated and the resultant actions for the scope will be returned.
 Rules can be set on users or on groups.
+
+## configuration file
+
+```yaml
+# cert and key will be generated if file are not present
+jwscert: /etc/registry-token-ldap/cert.crt
+jwskey: /etc/registry-token-ldap/cert.key
+# issuer must match registry config
+issuer: "auth.registry.local"
+# ldap server to use
+ldapserver: ad.contoso.com
+# base to search for users
+ldapbase: "DC=contoso,DC=com"
+# domain to automaticaly add to auth request
+defaultdomain: CONTOSO
+# rules to provide access (cumulative)
+rules:
+  # Admin can do all
+  - group: "AdminGroup"
+    match: ".+"
+    actions: [ "push", "pull" ]
+  # Users can do all on their repo
+  - match: "${user}/.+"
+    actions: [ "push", "pull" ]
+  # Everybody can pull
+  - match: ".+"
+    actions: [ "pull" ]
+```
