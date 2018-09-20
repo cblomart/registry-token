@@ -303,6 +303,17 @@ func TestRule_Eval(t *testing.T) {
 			},
 			want: "repository:john/foo:",
 		},
+		{
+			name: "invalid regex",
+			r:    &Rule{User: "", Group: "", Match: "${user}/[0-", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "john",
+				group:  "",
+				scope:  Scope{Type: "repository", Name: "people/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "people/foo"},
+			},
+			want: "repository:people/foo:",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
