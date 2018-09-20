@@ -19,12 +19,16 @@ func (r *Rule) Eval(user string, group string, scope Scope, access *Scope) {
 		glog.Errorf("Requested scope is not repository (%s)", scope.Type)
 		return
 	}
+	if access.Type != scope.Type || access.Name != scope.Name {
+		glog.Errorf("Evaluating a different access than scope (scope %s:%s and access %s:%s)", scope.Type, scope.Name, access.Type, access.Name)
+		return
+	}
 	match := r.Match
 	if strings.Contains(match, "${user}") {
 		match = strings.Replace(match, "${user}", user, -1)
 	}
 	if strings.Contains(match, "${group}") {
-		match = strings.Replace(match, "${fgroup}", group, -1)
+		match = strings.Replace(match, "${group}", group, -1)
 	}
 	matched, err := regexp.MatchString(match, scope.Name)
 	if err != nil {
