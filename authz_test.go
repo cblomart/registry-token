@@ -259,6 +259,50 @@ func TestRule_Eval(t *testing.T) {
 			},
 			want: "repository:john/foo:",
 		},
+		{
+			name: "specific user access",
+			r:    &Rule{User: "john", Group: "", Match: ".*", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "john",
+				group:  "",
+				scope:  Scope{Type: "repository", Name: "john/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "john/foo", Actions: []string{}},
+			},
+			want: "repository:john/foo:pull,push",
+		},
+		{
+			name: "specific group access",
+			r:    &Rule{User: "", Group: "all", Match: ".*", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "cedric",
+				group:  "all",
+				scope:  Scope{Type: "repository", Name: "john/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "john/foo", Actions: []string{}},
+			},
+			want: "repository:john/foo:pull,push",
+		},
+		{
+			name: "specific user access not matching",
+			r:    &Rule{User: "john", Group: "", Match: ".*", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "cedric",
+				group:  "",
+				scope:  Scope{Type: "repository", Name: "john/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "john/foo", Actions: []string{}},
+			},
+			want: "repository:john/foo:",
+		},
+		{
+			name: "specific group access not matching",
+			r:    &Rule{User: "", Group: "all", Match: ".*", Actions: []string{"push", "pull"}},
+			args: args{
+				user:   "cedric",
+				group:  "project",
+				scope:  Scope{Type: "repository", Name: "john/foo", Actions: []string{"pull", "push"}},
+				access: &Scope{Type: "repository", Name: "john/foo", Actions: []string{}},
+			},
+			want: "repository:john/foo:",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -295,6 +339,22 @@ func TestAuthorize(t *testing.T) {
 				scopes: "repository:cblomart/foo:pull,push",
 			},
 			want: "repository:cblomart/foo:pull,push",
+		},
+		{
+			name: "general pull access and user access tp",
+			args: args{
+				request: AuthzRequest{
+					User:   "cblomart",
+					Groups: []string{"project", "all"},
+				},
+				rules: []Rule{
+					Rule{User: "", Group: "", Match: "${user}/.*", Actions: []string{"push"}},
+					Rule{User: "", Group: "", Match: "${group}/.*", Actions: []string{"push"}},
+					Rule{User: "", Group: "", Match: ".*", Actions: []string{"pull"}},
+				},
+				scopes: "repository:cblomart/foo:pull,push repository:project/foo:pull,push repository:john/test:pull,push",
+			},
+			want: "repository:cblomart/foo:pull,push repository:project/foo:pull,push repository:john/test:pull",
 		},
 	}
 	for _, tt := range tests {
