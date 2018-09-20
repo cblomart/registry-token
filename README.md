@@ -53,6 +53,7 @@ LDAPAttribute: mail
 # certificate to auth ca
 LDAPCa: /etc/ldapca.crt
 ```
+
 ## License
 
 See [license](./LICENSE)

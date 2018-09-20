@@ -253,7 +253,7 @@ func TestRule_Eval(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.r.Eval(tt.args.user, tt.args.group, tt.args.scope, tt.args.access)
 			if tt.args.access.String() == tt.want {
-				t.Errorf("Eval() = %v, want %v", tt.args.access.String(), tt.want)
+				t.Errorf("Eval() = '%v', want '%v'", tt.args.access.String(), tt.want)
 			}
 		})
 	}
